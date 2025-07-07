@@ -1,19 +1,18 @@
 import { useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "../index.css";
-import merge from "../assets/merge.svg"; // Import your image here
+import { data } from "../utils/Data";
 
 const FileGetter = ({
-  title = "Merge PDF",
-  subtitle = "Combine multiple PDF files into a single document",
   acceptedFileTypes = ".pdf",
   buttonText = "Select PDF file",
   multipleFiles = true,
   onFileSelect,
 
   // Optional style overrides
-  wrapperClass = "min-h-screen bg-white flex justify-center  px-80",
+  wrapperClass = "min-h-screen  w-full bg-white flex justify-center  px-80",
   cardClass = "w-full max-w-5xl bg-white flex flex-col items-center ",
-  headerClass = "bg-blue-100 relative w-3/4 overflow-hidden pt-6 pb-6 pl-8 pr-8 rounded-[8px] mt-[80px] mb-6 text-start",
+  headerClass = "bg-blue-100 relative w-full overflow-hidden pt-6 pb-6 pl-8 pr-8 rounded-[8px] mt-[80px] mb-6 text-start",
   imageClass = "absolute right-0 top-8 fill-white w-[84px] header h-[84px]",
   titleClass = "text-2xl font-bold text-gray-800",
   subtitleClass = "text-sm text-gray-500 mt-1",
@@ -27,6 +26,15 @@ const FileGetter = ({
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+
+  const location = useLocation();
+  const currentPath = location.pathname.replace("/", "");
+
+  const matchedData = data.find((tool) => tool.path === currentPath);
+
+  const title = matchedData?.title || "Tool";
+  const subtitle = matchedData?.description || "Upload and process your files";
+  const image = matchedData?.icon || "";
 
   const handleFileClick = () => fileInputRef.current.click();
 
@@ -67,45 +75,47 @@ const FileGetter = ({
   };
 
   return (
-    <div className={wrapperClass}>
-      <div className={cardClass}>
-        {/* Always show header */}
-        <div className={headerClass}>
-          <h1 className={titleClass}>{title}</h1>
-          <p className={subtitleClass}>{subtitle}</p>
-       <img src={merge} alt="merge" className={imageClass}/>
-        </div>
-
-        {files.length > 0 ? (
-          // Show children after file selection
-          <div>{children}</div>
-        ) : (
-          // File input UI
-          <div
-            className={`${dropZoneClass} ${
-              isDragging ? dropZoneActiveClass : ""
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-          >
-            <div className={iconClass}>📄</div>
-            <p className='text-gray-500'>Drag & drop files here</p>
-            <input
-              type='file'
-              accept={acceptedFileTypes}
-              multiple={multipleFiles}
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className='hidden'
-            />
-            <button className={selectButtonClass} onClick={handleFileClick}>
-              {buttonText}
-            </button>
+    <>
+      {files.length > 0 ? (
+        <div className='w-full'>{children}</div>
+      ) : (
+        <>
+          <div className={wrapperClass}>
+            <div className={cardClass}>
+              <div className={headerClass}>
+                <h1 className={titleClass}>{title}</h1>
+                <p className={subtitleClass}>{subtitle}</p>
+                {image && (
+                  <img src={image} alt={title} className={imageClass} />
+                )}
+              </div>
+              <div
+                className={`${dropZoneClass} ${
+                  isDragging ? dropZoneActiveClass : ""
+                }`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+              >
+                <div className={iconClass}>📄</div>
+                <p className='text-gray-500'>Drag & drop files here</p>
+                <input
+                  type='file'
+                  accept={acceptedFileTypes}
+                  multiple={multipleFiles}
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className='hidden'
+                />
+                <button className={selectButtonClass} onClick={handleFileClick}>
+                  {buttonText}
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+        </>
+      )}
+    </>
   );
 };
 

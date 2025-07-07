@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { ReactSortable } from "react-sortablejs";
 import FileGetter from "../../components/FileGetter";
-import PDFPreviewCanvas from "../../components/PDFPreviewCanvas";
+import PdfPreviewCanvas from "../../components/PdfPreviewCanvas";
 import { FaPlus } from "react-icons/fa";
 
 function Merge() {
@@ -48,7 +48,7 @@ function Merge() {
                   <div className="absolute top-0 left-0 bg-black text-white text-[10px] px-1 py-[2px] rounded-br z-10">
                     PDF
                   </div>
-                  <PDFPreviewCanvas file={file} />
+                  <PdfPreviewCanvas file={files[0]} pageNumber={1} />
                 </div>
                 <p className="mt-2 text-xs text-gray-700 max-w-[110px] text-center truncate">
                   {file.name}

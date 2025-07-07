@@ -85,7 +85,7 @@ export const tools = [
     id: 10,
     title: "More tools coming soon",
     description: "",
-    icon: "",
+    icon: null,
     link: "#",
     new: false,
   },
